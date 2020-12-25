@@ -83,21 +83,21 @@ button[0].click()
 home_url = driver.current_url
 classroom_xpaths = [
     ['CLP',
-     '//*[@id="yDmH0d"]/div[2]/div/div[2]/div/ol/li[4]/div[1]/div[3]/h2/a[1]'],
-    # ['M1',
-    # 'x_path goes here'],
+     '//*[@id="yDmH0d"]/div[2]/div[1]/div[2]/div/ol/li[5]/div[1]/div[3]/h2/a[1]'],
+    ['M1',
+     '//*[@id="yDmH0d"]/div[2]/div[1]/div[2]/div/ol/li[1]/div[1]/div[3]/h2/a[1]'],
     # ['TCE',
     # 'x_path goes here'],
     ['CP',
-     '//*[@id="yDmH0d"]/div[2]/div/div[2]/div/ol/li[2]/div[1]/div[3]/h2/a[1]'],
+     '//*[@id="yDmH0d"]/div[2]/div[1]/div[2]/div/ol/li[3]/div[1]/div[3]/h2/a[1]'],
     ['BE',
-     '//*[@id="yDmH0d"]/div[2]/div/div[2]/div/ol/li[6]/div[1]/div[3]/h2/a[1]'],
+     '//*[@id="yDmH0d"]/div[2]/div[1]/div[2]/div/ol/li[7]/div[1]/div[3]/h2/a[1]'],
     ['BE Lab',
-     '//*[@id="yDmH0d"]/div[2]/div/div[2]/div/ol/li[5]/div[1]/div[3]/h2/a[1]'],
+     '//*[@id="yDmH0d"]/div[2]/div[1]/div[2]/div/ol/li[6]/div[1]/div[3]/h2/a[1]'],
     ['CP Lab',
-     '//*[@id="yDmH0d"]/div[2]/div/div[2]/div/ol/li[3]/div[1]/div[3]/h2/a[1]'],
+     '//*[@id="yDmH0d"]/div[2]/div[1]/div[2]/div/ol/li[4]/div[1]/div[3]/h2/a[1]'],
     ['Physics Lab',
-     '//*[@id="yDmH0d"]/div[2]/div/div[2]/div/ol/li[1]/div[1]/div[3]/h2/a[1]']
+     '//*[@id="yDmH0d"]/div[2]/div[1]/div[2]/div/ol/li[2]/div[1]/div[3]/h2/a[1]']
 ]
 classrooms_post_count = [-1 for x in classroom_xpaths]
 
@@ -113,18 +113,27 @@ while True:
             pass
         hold(driver, 10, 'n8F6Jd', 1)
         temp_posts = driver.find_elements_by_class_name('n8F6Jd')
-        posts = [temp_posts[i].find_element_by_xpath('./div[1]') for i in range(len(temp_posts))]
+        posts = [temp_posts[i].find_element_by_xpath(
+            './div[1]') for i in range(len(temp_posts))]
         if classrooms_post_count[i] == -1 or len(posts) == 0:
             print(f'{classroom_xpaths[i][0]} has {len(posts)} posts.\n')
             if len(posts) == 0:
                 continue
-            webhook_debug.send(
-                f'<@USER-ID> {classroom_xpaths[i][0]} initialisation:\n```{posts[0].text}```', username='Debug-Andy')
+            try:
+                webhook_debug.send(
+                    f'<@USER-ID> {classroom_xpaths[i][0]} initialisation:\n```{posts[0].text}```', username='Debug-Andy')
+            except:
+                webhook_debug.send(
+                    f'<@USER-ID> {classroom_xpaths[i][0]} initialisation:\n```Exceeds discord character limit```', username='Debug-Andy')
             classrooms_post_count[i] = posts[0].text
         if classrooms_post_count[i] != posts[0].text:
             print(f'old\n{classrooms_post_count[i]}\nnew\n{posts[0].text}\n')
-            webhook_debug.send(
-                f'<@USER-ID> {classroom_xpaths[i][0]} changelog:\nOld:\n```{classrooms_post_count[i]}```\nNew:\n```{posts[0].text}```', username='Debug-Andy')
+            try:
+                webhook_debug.send(
+                    f'<@USER-ID> {classroom_xpaths[i][0]} changelog:\nOld:\n```{classrooms_post_count[i]}```\nNew:\n```{posts[0].text}```', username='Debug-Andy')
+            except:
+                webhook_debug.send(
+                    f'<@USER-ID> {classroom_xpaths[i][0]} changelog:\n```Exceeds discord character limit```', username='Debug-Andy')
             print(f'{classroom_xpaths[i][0]} has new posts.\n')
             webhook.send(
                 f'{classroom_xpaths[i][0]} has new post(s)/edit(s).', username='Classroom-Notifier')
